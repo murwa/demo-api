@@ -23,4 +23,22 @@ class Account extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * @param $amount
+     */
+    public function setAmountAttribute($amount)
+    {
+        $this->attributes['amount'] = round(($amount ?: 0) * 100);
+    }
+
+    /**
+     * @param $amount
+     *
+     * @return float|int
+     */
+    public function getAmountAttribute($amount)
+    {
+        return $amount ? $amount / 100 : $amount;
+    }
 }
