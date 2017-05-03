@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,7 +15,7 @@ $namespace = 'App\Http\Controllers\\';
 # API Routes
 app('Dingo\Api\Routing\Router')->version('v1', function (\Dingo\Api\Routing\Router $api) use ($namespace) {
     $api->post('auth', [
-        'uses' => 'AuthController@auth',
+        'uses' => $namespace . 'AuthController@auth',
         'as'   => 'auth.auth',
     ]);
 });
