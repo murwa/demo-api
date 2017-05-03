@@ -13,6 +13,11 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+$namespace = 'App\Http\Controllers\\';
+# API Routes
+app('Dingo\Api\Routing\Router')->version('v1', function (\Dingo\Api\Routing\Router $api) use ($namespace) {
+    $api->post('auth', [
+        'uses' => 'AuthController@auth',
+        'as'   => 'auth.auth',
+    ]);
 });
