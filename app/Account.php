@@ -29,7 +29,7 @@ class Account extends Model
      */
     public function setAmountAttribute($amount)
     {
-        $this->attributes['amount'] = round(($amount ?: 0) * 100);
+        $this->attributes['amount'] = intval(round(($amount ?: 0) * 100));
     }
 
     /**

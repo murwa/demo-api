@@ -15,6 +15,7 @@
 $factory->define(App\User::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
+        'username' => $faker->userName,
         'pin'  => bcrypt('1234'),
     ];
 });

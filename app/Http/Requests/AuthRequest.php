@@ -29,7 +29,8 @@ class AuthRequest extends FormRequest
     public function rules()
     {
         return [
-            'pin' => 'required',
+            'pin' => 'required|min:4|max:4',
+            'username' => 'required|exists:users',
         ];
     }
 }
