@@ -18,4 +18,20 @@ app('Dingo\Api\Routing\Router')->version('v1', function (\Dingo\Api\Routing\Rout
         'uses' => $namespace . 'AuthController@auth',
         'as'   => 'auth.auth',
     ]);
+    $api->get('accounts/{account}/balance', [
+        'uses' => $namespace . 'AccountController@auth',
+        'as'   => 'accounts.balance',
+    ]);
+    $api->post('accounts/{account}/deposit', [
+        'uses' => $namespace . 'AccountController@deposit',
+        'as'   => 'accounts.deposit',
+    ]);
+    $api->post('accounts/{account}/withdraw', [
+        'uses' => $namespace . 'AccountController@withdraw',
+        'as'   => 'accounts.withdraw',
+    ]);
+    $api->post('accounts/{account}/transfer', [
+        'uses' => $namespace . 'AccountController@transfer',
+        'as'   => 'accounts.transfer',
+    ]);
 });

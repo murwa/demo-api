@@ -17,6 +17,21 @@ class Account extends Model
     protected $fillable = ['amount'];
 
     /**
+     * Boot
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function (Account $account) {
+            $account->url = random_int(pow(10, 6), pow(10, 7) - 1);
+
+            return $account;
+        });
+    }
+
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()
@@ -40,5 +55,13 @@ class Account extends Model
     public function getAmountAttribute($amount)
     {
         return $amount ? $amount / 100 : $amount;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'url';
     }
 }

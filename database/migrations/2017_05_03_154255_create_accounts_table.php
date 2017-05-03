@@ -17,6 +17,7 @@ class CreateAccountsTable extends Migration
             $table->increments('id');
             $table->bigInteger('user_id', false, true);
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->string('url')->unique();
             $table->integer('amount');
             $table->timestamps();
         });
