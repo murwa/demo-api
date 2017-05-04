@@ -46,7 +46,9 @@
         ],
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-            "php artisan optimize"
+            "php artisan optimize",
+            "php artisan migrate",
+            "php artisan db:seed --class UserTableSeeder"
         ]
     },
     "config": {
