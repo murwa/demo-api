@@ -34,4 +34,7 @@ app('Dingo\Api\Routing\Router')->version('v1', ['middleware' => 'bindings'], fun
         'uses' => $namespace . 'AccountController@transfer',
         'as'   => 'accounts.transfer',
     ]);
+    $api->resource('accounts', $namespace . 'AccountController', [
+        'only' => ['index']
+    ]);
 });

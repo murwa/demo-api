@@ -137,4 +137,14 @@ class AccountController extends Controller implements AccountContract
     {
         return $this->response()->item($account, new AccountTransformer());
     }
+
+    /**
+     * @return \Dingo\Api\Http\Response
+     */
+    public function index()
+    {
+        $accounts = $this->user()->accounts;
+
+        return $this->response()->collection($accounts, new AccountTransformer());
+    }
 }

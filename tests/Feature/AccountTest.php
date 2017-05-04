@@ -183,4 +183,23 @@ class AccountTest extends TestCase
         ], ['Authorization' => 'Bearer ' . $this->token])
             ->assertStatus(422);
     }
+
+    /**
+     * @test
+     *
+     * Test: GET /accounts
+     */
+    public function it_should_list_user_accounts()
+    {
+        $this->get('api/accounts', ['Authorization' => 'Bearer ' . $this->token])
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'url',
+                        'amount',
+                    ],
+                ],
+            ]);
+    }
 }
