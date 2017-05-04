@@ -18,7 +18,7 @@ use Illuminate\Http\Request;
  *
  * @package App\Http\Controllers
  */
-class AccountController extends Controller
+class AccountController extends Controller implements AccountContract
 {
     /**
      * @var \App\Account
@@ -73,7 +73,7 @@ class AccountController extends Controller
      *
      * @return \Dingo\Api\Http\Response
      */
-    public function withdraw(Account $account)
+    public function withdraw(Account $account): Response
     {
         # Do we have enough cash
         $this->canWithdraw($account);
@@ -90,7 +90,7 @@ class AccountController extends Controller
      * @return \Dingo\Api\Http\Response
      *
      */
-    public function transfer(TransferRequest $request, Account $account)
+    public function transfer(TransferRequest $request, Account $account): Response
     {
         $this->canWithdraw($account);
         $to = Account::whereUrl($request->account)->first();

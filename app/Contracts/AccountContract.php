@@ -9,8 +9,10 @@
 namespace App\Contracts;
 
 
+use App\Account;
 use App\Http\Requests\DepositRequest;
 use App\Http\Requests\TransferRequest;
+use Dingo\Api\Http\Response;
 
 /**
  * Interface AccountContract
@@ -22,32 +24,40 @@ interface AccountContract
     /**
      * Get account balance
      *
+     * @param \App\Account $account
+     *
      * @return \Dingo\Api\Http\Response
      */
-    public function balance();
+    public function balance(Account $account): Response;
 
     /**
      * Deposit money in the account
      *
      * @param \App\Http\Requests\DepositRequest $request
      *
-     * @return mixed
+     * @param \App\Account                      $account
+     *
+     * @return \Dingo\Api\Http\Response
      */
-    public function deposit(DepositRequest $request);
+    public function deposit(DepositRequest $request, Account $account): Response;
 
     /**
      * Withdraw money from the account
      *
-     * @return mixed
+     * @param \App\Account $account
+     *
+     * @return \Dingo\Api\Http\Response
      */
-    public function withdraw();
+    public function withdraw(Account $account): Response;
 
     /**
      * Transfer money across accounts
      *
      * @param \App\Http\Requests\TransferRequest $request
      *
-     * @return mixed
+     * @param \App\Account                       $account
+     *
+     * @return \Dingo\Api\Http\Response|mixed
      */
-    public function transfer(TransferRequest $request);
+    public function transfer(TransferRequest $request, Account $account): Response;
 }
