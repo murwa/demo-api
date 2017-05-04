@@ -218,4 +218,22 @@ class AccountTest extends TestCase
                 ],
             ]);
     }
+
+    /**
+     * @test
+     *
+     * Test: GET /accounts/{account}
+     */
+    public function it_should_get_an_account_given_url()
+    {
+        $this->get('api/accounts/' . $this->account->getRouteKey(), ['Authorization' => 'Bearer ' . $this->token])
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'data' => [
+                    'url',
+                    'amount',
+                ],
+            ]);
+
+    }
 }
