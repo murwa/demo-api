@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use Dingo\Api\Http\FormRequest;
 
 class DepositRequest extends FormRequest
 {
@@ -24,7 +24,7 @@ class DepositRequest extends FormRequest
     public function rules()
     {
         return [
-            'amount' => 'required|numeric'
+            'amount' => 'required|numeric',
         ];
     }
 }

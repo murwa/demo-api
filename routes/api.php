@@ -13,13 +13,13 @@
 
 $namespace = 'App\Http\Controllers\\';
 # API Routes
-app('Dingo\Api\Routing\Router')->version('v1', function (\Dingo\Api\Routing\Router $api) use ($namespace) {
+app('Dingo\Api\Routing\Router')->version('v1', ['middleware' => 'bindings'], function (\Dingo\Api\Routing\Router $api) use ($namespace) {
     $api->post('auth', [
-        'uses' => $namespace . 'AuthController@auth',
+        'uses' => $namespace . 'AuthController@login',
         'as'   => 'auth.auth',
     ]);
     $api->get('accounts/{account}/balance', [
-        'uses' => $namespace . 'AccountController@auth',
+        'uses' => $namespace . 'AccountController@balance',
         'as'   => 'accounts.balance',
     ]);
     $api->post('accounts/{account}/deposit', [

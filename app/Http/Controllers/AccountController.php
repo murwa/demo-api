@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Account;
 use App\Contracts\AccountContract;
+use App\Exceptions\ATMException;
 use App\Exceptions\InsufficientFundsHttpException;
 use App\Exceptions\MissingAmountHttpException;
 use App\Http\Requests\DepositRequest;
@@ -17,13 +18,8 @@ use Illuminate\Http\Request;
  *
  * @package App\Http\Controllers
  */
-class AccountController extends Controller implements AccountContract
+class AccountController extends Controller
 {
-    /**
-     * @var \App\User
-     */
-    protected $user;
-
     /**
      * @var \App\Account
      */
@@ -44,74 +40,91 @@ class AccountController extends Controller implements AccountContract
     public function __construct(Request $request, Account $account)
     {
         $this->middleware('api.auth');
-        $this->user = $this->user();
         $this->account = $account;
         $this->request = $request;
     }
 
     /**
-     * @return Response
+     * @param \App\Account $account
+     *
+     * @return \Dingo\Api\Http\Response
      */
-    public function balance(): Response
+    public function balance(Account $account): Response
     {
-        return $this->itemResponse($this->account);
+        return $this->itemResponse($account);
     }
 
     /**
      * @param \App\Http\Requests\DepositRequest $request
      *
-     * @return Response
+     * @param \App\Account                      $account
+     *
+     * @return \Dingo\Api\Http\Response
      */
-    public function deposit(DepositRequest $request): Response
+    public function deposit(DepositRequest $request, Account $account): Response
     {
-        $this->account->increment('amount', $request->amount * 1);
+        $account->increment('amount', $request->amount * 1);
 
-        return $this->itemResponse($this->account);
+        return $this->itemResponse($account);
     }
 
     /**
+     * @param \App\Account $account
+     *
      * @return \Dingo\Api\Http\Response
      */
-    public function withdraw()
+    public function withdraw(Account $account)
     {
         # Do we have enough cash
-        $amount = $this->canWithdraw();
-        $this->account->decrement('amount', $amount);
+        $this->canWithdraw($account);
+        $account->decrement('amount', $this->request->amount * 1);
 
-        return $this->itemResponse($this->account);
+        return $this->itemResponse($account);
     }
 
     /**
      * @param \App\Http\Requests\TransferRequest $request
      *
+     * @param \App\Account                       $account
+     *
      * @return \Dingo\Api\Http\Response
+     *
      */
-    public function transfer(TransferRequest $request)
+    public function transfer(TransferRequest $request, Account $account)
     {
-        $amount = $this->canWithdraw();
-        $account = Account::whereUrl($request->account)->first();
-        \DB::transaction(function () use ($amount, $account) {
-            $account->increment('amount', $amount);
-            $this->account->decrement('amount', $amount);
-        });
+        $this->canWithdraw($account);
+        $to = Account::whereUrl($request->account)->first();
+        if ($to) {
+            if ($to->url === $account->url) {
+                throw new ATMException('You cannot transfer to the same account');
+            }
+            \DB::transaction(function () use ($to, $account) {
+                $amount = $this->request->amount * 1;
+                $to->increment('amount', $amount);
+                $account->decrement('amount', $amount);
+            });
 
-        return $this->itemResponse($this->account);
+            return $this->itemResponse($account);
+        }
+        throw new ATMException('Cannot find specified account');
     }
 
     /**
+     * @param \App\Account $account
+     *
      * @return int
      */
-    protected function canWithdraw()
+    protected function canWithdraw(Account $account)
     {
-        $amount = intval($this->request->amount * 100);
+        $amount = $this->request->amount;
         if ($amount <= 0) {
             throw new MissingAmountHttpException();
         }
-        if ($this->account->amount < $amount) {
+        if ($account->amount * 100 < intval(round($amount * 100))) {
             throw new InsufficientFundsHttpException();
         }
 
-        return $amount;
+        return true;
     }
 
 

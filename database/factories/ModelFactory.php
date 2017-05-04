@@ -22,6 +22,6 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Account::class, function (Faker\Generator $faker) {
     return [
-        'amount' => $faker->randomFloat(6),
+        'amount' => $faker->randomFloat(null, pow(10, 2), pow(10, 4)),
     ];
 });

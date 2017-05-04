@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use Dingo\Api\Http\FormRequest;
 
 class TransferRequest extends FormRequest
 {
@@ -24,8 +24,8 @@ class TransferRequest extends FormRequest
     public function rules()
     {
         return [
-            'amount' => 'required',
-            'account' => 'required|exists:accounts,url'
+            'amount'  => 'required',
+            'account' => 'required|exists:accounts,url',
         ];
     }
 }

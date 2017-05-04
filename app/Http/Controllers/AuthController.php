@@ -39,7 +39,7 @@ class AuthController extends Controller
      *
      * @return \Dingo\Api\Http\Response
      */
-    public function auth(AuthRequest $request)
+    public function login(AuthRequest $request)
     {
         try {
             $user = User::whereUsername($request->username)->firstOrFail();
