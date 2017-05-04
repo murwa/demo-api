@@ -63,7 +63,7 @@ class AccountController extends Controller implements AccountContract
      */
     public function deposit(DepositRequest $request, Account $account): Response
     {
-        $account->increment('amount', $request->amount * 1);
+        $account->fill(['amount' => $account->amount + $this->request->amount * 1])->save();
 
         return $this->itemResponse($account);
     }
@@ -77,7 +77,7 @@ class AccountController extends Controller implements AccountContract
     {
         # Do we have enough cash
         $this->canWithdraw($account);
-        $account->decrement('amount', $this->request->amount * 1);
+        $account->fill(['amount' => $account->amount - $this->request->amount * 1])->save();
 
         return $this->itemResponse($account);
     }
@@ -98,10 +98,10 @@ class AccountController extends Controller implements AccountContract
             if ($to->url === $account->url) {
                 throw new ATMException('You cannot transfer to the same account');
             }
-            \DB::transaction(function () use ($to, $account) {
+            \DB::transaction(function () use ($to, &$account) {
                 $amount = $this->request->amount * 1;
-                $to->increment('amount', $amount);
-                $account->decrement('amount', $amount);
+                $to->fill(['amount' => $to->amount + $amount])->save();
+                $account->fill(['amount' => $account->amount - $amount])->save();
             });
 
             return $this->itemResponse($account);

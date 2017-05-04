@@ -15,7 +15,7 @@ use JWTAuth;
  */
 class AccountTest extends TestCase
 {
-    use DatabaseMigrations;
+    # use DatabaseMigrations;
 
     /**
      * @var \App\User
@@ -79,8 +79,12 @@ class AccountTest extends TestCase
                     'amount',
                 ],
             ]);
-
-        $this->assertEquals($amount + $deposit, $response->baseResponse->original->amount);
+        $balance = $amount + $deposit;
+        $this->assertEquals($balance, $response->baseResponse->original->amount);
+        $this->assertDatabaseHas('accounts', [
+            'url'    => $this->account->url,
+            'amount' => $balance * 100,
+        ]);
     }
 
     /**
@@ -100,8 +104,12 @@ class AccountTest extends TestCase
                     'amount',
                 ],
             ]);
-
-        $this->assertEquals($amount - $withdrawal, $response->baseResponse->original->amount);
+        $balance = $amount - $withdrawal;
+        $this->assertEquals($balance, $response->baseResponse->original->amount);
+        $this->assertDatabaseHas('accounts', [
+            'url'    => $this->account->url,
+            'amount' => $balance * 100,
+        ]);
     }
 
     /**
@@ -135,7 +143,6 @@ class AccountTest extends TestCase
      */
     public function it_should_transfer_from_an_account_to_a_different_account()
     {
-        $amount = $this->account->amount;
         $to = Account::where('url', '!=', $this->account->url)->inRandomOrder()->first();
         $withdrawal = pow(10, 1);
         $response = $this->post('api/accounts/' . $this->account->getRouteKey() . '/transfer', [
@@ -149,8 +156,17 @@ class AccountTest extends TestCase
                     'amount',
                 ],
             ]);
-
-        $this->assertEquals($amount - $withdrawal, $response->baseResponse->original->amount);
+        $balanceFrom = $this->account->amount - $withdrawal;
+        $balanceTo = $to->amount + $withdrawal;
+        $this->assertEquals($balanceFrom, $response->baseResponse->original->amount);
+        $this->assertDatabaseHas('accounts', [
+            'url'    => $this->account->url,
+            'amount' => $balanceFrom * 100,
+        ]);
+        $this->assertDatabaseHas('accounts', [
+            'url'    => $to->url,
+            'amount' => $balanceTo * 100,
+        ]);
     }
 
     /**
