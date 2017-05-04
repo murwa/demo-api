@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
  * Class AccountController
  *
  * @package App\Http\Controllers
+ * @Resource("User Account", uri="/accounts")
  */
 class AccountController extends Controller implements AccountContract
 {
@@ -31,7 +32,6 @@ class AccountController extends Controller implements AccountContract
     protected $request;
 
     /**
-     * @Resource("User Account", uri="/accounts")
      * AccountController constructor.
      *
      * @param \Illuminate\Http\Request $request
@@ -45,9 +45,14 @@ class AccountController extends Controller implements AccountContract
     }
 
     /**
+     * Balance
+     *
+     * Get the account balance.
+     *
      * @param \App\Account $account
      *
      * @return \Dingo\Api\Http\Response
+     * @Get("/{account}/balance")
      */
     public function balance(Account $account): Response
     {
@@ -55,11 +60,16 @@ class AccountController extends Controller implements AccountContract
     }
 
     /**
+     * Deposit
+     *
+     * Add money to the account
+     *
      * @param \App\Http\Requests\DepositRequest $request
      *
      * @param \App\Account                      $account
      *
      * @return \Dingo\Api\Http\Response
+     * @Post("/{account}/deposit")
      */
     public function deposit(DepositRequest $request, Account $account): Response
     {
@@ -69,9 +79,15 @@ class AccountController extends Controller implements AccountContract
     }
 
     /**
+     * Withdrawal
+     *
+     * Withdraw from the Account. The amount to withdraw must be a positive integer, and not more than the available
+     * balance
+     *
      * @param \App\Account $account
      *
      * @return \Dingo\Api\Http\Response
+     * @Post("/{account}/withdraw")
      */
     public function withdraw(Account $account): Response
     {
@@ -83,11 +99,17 @@ class AccountController extends Controller implements AccountContract
     }
 
     /**
+     * Transfer
+     *
+     * Move money from Account A to another account B. The amount to be transfered from Account A must be lower than
+     * the balance in A, and be positive amount
+     *
      * @param \App\Http\Requests\TransferRequest $request
      *
      * @param \App\Account                       $account
      *
      * @return \Dingo\Api\Http\Response
+     * @Post("/{account}/transfer")
      *
      */
     public function transfer(TransferRequest $request, Account $account): Response
@@ -139,7 +161,12 @@ class AccountController extends Controller implements AccountContract
     }
 
     /**
+     * User Accounts
+     *
+     * List user's accounts
+     *
      * @return \Dingo\Api\Http\Response
+     * @Get("/")
      */
     public function index()
     {
@@ -149,9 +176,14 @@ class AccountController extends Controller implements AccountContract
     }
 
     /**
+     * Account
+     *
+     * Get a single account by account number
+     *
      * @param \App\Account $account
      *
      * @return \Dingo\Api\Http\Response
+     * @Get("/{account}")
      */
     public function show(Account $account)
     {

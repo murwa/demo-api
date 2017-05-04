@@ -16,6 +16,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
  * Class AuthController
  *
  * @package App\Http\Controllers
+ * @Resource("Auth", uri="/auth")
  */
 class AuthController extends Controller
 {
@@ -35,9 +36,15 @@ class AuthController extends Controller
     }
 
     /**
+     * Auth
+     *
+     * Auth users by their username and pin. The pin is encrypted before storage.
+     *
      * @param \App\Http\Requests\AuthRequest $request
      *
      * @return \Dingo\Api\Http\Response
+     *
+     * @Post("/")
      */
     public function login(AuthRequest $request)
     {
